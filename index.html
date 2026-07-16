@@ -1,0 +1,121 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Else Can You Know?</title>
+<style>
+:root{--ink:#f5e7bd;--muted:#b9b5a6;--night:#07111f;--night2:#0c1c31;--panel:#10243d;--panel2:#142c49;--gold:#d7a83f;--gold2:#f0cd77;--parchment:#efe0b5;--parchment2:#d7bf85;--green:#79bd72;--red:#c96[...]
+
+.mode-switch{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 18px}.mode-switch button{border:1px solid #d7a83f55;background:#071526;color:var(--muted);padding:10px 16px;border-ra[...]
+
+.termS{color:#77c8ff;font-weight:900}.termP{color:#ef9c83;font-weight:900}.termM{color:#b5df7b;font-weight:900}.dist{border-bottom:3px double currentColor;padding-bottom:1px}.challenge-grid{display:gr[...]
+@media(max-width:900px){.challenge-grid{grid-template-columns:1fr 1fr}.mood-grid{grid-template-columns:1fr 1fr}.square-grid{gap:25px}.tabs{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:700px){.challenge-grid,.choice-grid,.square-grid,.mood-grid{grid-template-columns:1fr}.builder-row{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(5,1fr)}.tab{font-size:.[...]
+
+.world-shell{display:grid;grid-template-columns:1.15fr .95fr;gap:18px;align-items:start}.world-map-panel,.world-info{border:1px solid var(--line);background:linear-gradient(180deg,#112742,#0b1d31);bor[...]
+</style></head><body><div class="app"><div class="topbar"><header><div class="brandrow"><div class="crest">Φ</div><div class="brand"><h1>What Else Can You Know?</h1><p>Follow reason from first princi[...]
+const Q={A:{name:'Universal affirmative',f:(s,p)=>`All ${s} are ${p}.`},E:{name:'Universal negative',f:(s,p)=>`No ${s} are ${p}.`},I:{name:'Particular affirmative',f:(s,p)=>`Some ${s} are ${p}.`},O:{n[...]
+const lessons=[
+['Foundations','The Mortal Socrates',['Socrates is a man.','All men are mortal.'],['Socrates is mortal.','All mortals are men.','Socrates is wise.','Plato is mortal.'],0,'The middle term connects Socr[...]
+['Foundations','Nothing from Nothing',['Nothing comes from nothing.','Something exists now.'],['There has never been absolute nothing.','Everything has always existed.','Matter is eternal.','The unive[...]
+['Natural Theology','No Uncaused Events',['There are no uncaused events.','An event is occurring now.'],['The present event has a cause.','Every cause is material.','The cause is inside the event.','T[...]
+['Natural Theology','Something Has Always Existed',['There has never been absolute nothing.','Something exists now.'],['Something has always existed.','The present universe has always existed.','Every[...]
+['Natural Theology','The Source of Change',['A merely potential thing cannot actualize itself in the same respect.','Change is occurring.'],['Some actuality is responsible for the change.','Change is [...]
+['Natural Theology','No Infinite Deferral',['Every dependent cause requires an explanation outside itself.','An endless series of dependent causes would leave the whole series unexplained.'],['There m[...]
+['Part I · Spirit','Beyond Matter',['All material things are dependent, divisible, and subject to change.','The ultimate ground is non-dependent and is the source of material reality.'],['The ultimat[...]
+['Part I · Spirit','Knowledge and Will',['The ultimate source knows the order it produces.','It acts according to that known order rather than by external compulsion.'],['The source has intellect and[...]
+['Part I · Spirit','What Is Spirit?',['The ultimate source is immaterial.','The ultimate source possesses intellect and will.'],['The ultimate source is spirit.','It is an abstract number.','It is a [...]
+['Part II · Incommunicable','Without Limit',['A limit in being must arise from an external limiter or a received restricted nature.','The self-existent source receives neither existence nor nature fr[...]
+['Part II · Incommunicable','Without Beginning or End',['Whatever begins to exist receives existence and is dependent.','The ultimate source exists necessarily and receives existence from no other.'][...]
+['Part II · Incommunicable','No Unrealized Perfection',['Change requires acquisition or loss of actuality.','The necessary source has no unrealized perfection.'],['The source is unchangeable.','The s[...]
+['Part III · Communicable','Wisdom',['The source perfectly knows itself and the order of dependent reality.','Perfect knowledge ordered to right ends is wisdom.'],['The source is wise.','The source i[...]
+['Part III · Communicable','Power',['Every finite power ultimately derives from the first source.','The first source depends on no prior power to act.'],['The source is powerful in an underived way.'[...]
+['Part III · Communicable','Holiness',['Moral evil is a defect of right order.','The infinite and unchangeable source lacks no perfection and wills perfect moral order.'],['The source is holy.','The [...]
+['Part III · Communicable','Justice',['Justice gives to each what is due according to truth and right order.','The source perfectly knows truth and wills right order.'],['The source is just.','The so[...]
+['Part III · Communicable','Goodness',['Goodness is the perfection by which being is fitting and desirable.','The source possesses fullness of being without defect and causes finite goods.'],['The so[...]
+['Part III · Communicable','Truth',['Truth is agreement of knowledge and expression with what is.','The source perfectly knows reality and contains no intellectual or moral defect.'],['The source is [...]
+['Definition of God','Put the Definition Together',['The ultimate source is spirit.','The source is infinite, eternal, and unchangeable.','The source possesses being, wisdom, power, holiness, justice,[...]
+const saved=JSON.parse(localStorage.getItem('weyk-progress')||'{}');let state={view:'campaign',i:Number.isInteger(saved.i)?Math.min(saved.i,lessons.length-1):0,score:Number.isInteger(saved.score)?save[...]
+function setMode(m){state.mode=m;save();renderCampaign()}function chapterKey(i=state.i){return lessons[i][0]}function masteryFor(ch){const x=state.mastery[ch]||{attempts:0,correct:0};return x.attempts[...]
+function showOnboarding(step=0){const steps=[['Premises and conclusions','A <b>premise</b> is something given as true for the exercise. A <b>conclusion</b> is what follows from those premises.'],['Wha[...]
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}function prop(t,s,p){return Q[t].f(s,p)}function opts(sel='A'){return Object.k[...]
+function setView(v){state.view=v;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));({campaign:renderHome,syllogism:renderSyl,immediate:renderImm,challenges:[...]
+function renderHome(){if(!state.onboarded){showOnboarding();return}const chapters=[...new Set(lessons.map(x=>x[0]))];game.innerHTML=`<div class="section-title"><div class="eyebrow">Choose your path</d[...]
+function chapterList(){let out='',last='';lessons.forEach((L,i)=>{if(L[0]!==last){last=L[0];out+=`<div class="chapter-label">${L[0]} <span class="chapter-mastery">${masteryFor(L[0])}%</span></div>`}ou[...]
+function proofLedger(){const established=[];for(let j=0;j<state.i;j++)established.push(lessons[j][3][lessons[j][4]]);return `<div class="proof-ledger"><h3>Proof Ledger</h3>${established.length?`<p cla[...]
+function renderCampaign(){state.answered=false;const L=lessons[state.i];game.innerHTML=`<div class="mode-switch"><button class="${state.mode==='learn'?'active':''}" onclick="setMode('learn')">Learn</b[...]
+function restartCampaign(){state.i=0;state.score=0;state.mastery={};save();renderCampaign()}
+function errorReason(choice,L){const text=L[3][choice];if(/always|every|all|infinite|eternal/i.test(text)&&choice!==L[4])return 'This answer says more than the premises establish. A conclusion cannot [...]
+function choose(i){if(state.answered)return;state.answered=true;const L=lessons[state.i],bs=[...document.querySelectorAll('.answer')],ch=chapterKey();state.mastery[ch]=state.mastery[ch]||{attempts:0,c[...]
+function nextLesson(){if(state.i<lessons.length-1){state.i++;save();renderCampaign();window.scrollTo({top:0,behavior:'smooth'})}else{save();game.innerHTML='<div class="section-title"><div class="eyebr[...]
+function rel(fig,S,P,M){return +fig===1?[[M,P],[S,M]]:+fig===2?[[P,M],[S,M]]:+fig===3?[[M,P],[M,S]]:[[P,M],[M,S]]}function holds(t,a,b,w){let ab=false,anb=false;for(let m=0;m<8;m++)if(w[m]){const A=!![...]
+function distribution(t){return{subject:t==='A'||t==='E',predicate:t==='E'||t==='O'}}function ruleDiagnosis(ma,mi,c,f){const r=rel(f,'S','P','M'),d1=distribution(ma),d2=distribution(mi),dc=distributio[...]
+function renderSyl(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Classical Logic Workshop</div><h2>Syllogism Lab</h2><p class="explain">Enter the terms, mood, and figure. The calcu[...]
+function previewSyl(){const r=rel(fig.value,S.value,P.value,M.value);preview.innerHTML=`<div class="statement"><b>Major:</b> ${prop(ma.value,...r[0])}</div><div class="statement"><b>Minor:</b> ${prop([...]
+function calcSyl(){previewSyl();const r=test(ma.value,mi.value,co.value,fig.value,{S:eS.checked,P:eP.checked,M:eM.checked}),fails=ruleDiagnosis(ma.value,mi.value,co.value,fig.value);sres.className=`re[...]
+function syllogismDirections(){return `<details open><summary>Directions: how to test a classical categorical syllogism</summary><ol class="steps"><li>Identify the conclusion. Its subject is the <b>mi[...]
+function comp(x){return `non-${x}`}function imm(t,op,s,p,ex){if(op==='obversion'){const m={A:'E',E:'A',I:'O',O:'I'};return{ok:true,out:prop(m[t],s,comp(p)),why:'Change the quality and replace the pred[...]
+function renderImm(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Transformation Workshop</div><h2>Immediate Inference Lab</h2><p class="explain">Choose a proposition and operation.[...]
+function prevImm(){igiven.innerHTML=prop(it.value,is.value,ip.value)}function calcImm(){prevImm();const r=imm(it.value,io.value,is.value,ip.value,iex.checked);ires.className=`result show ${r.ok===true[...]
+function immediateDirections(){return `<details open><summary>Directions for conversion, obversion, and contraposition</summary><h3>Conversion</h3><ol class="steps"><li>Keep the quality and quantity u[...]
+function renderRules(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Reference Library</div><h2>Logic Rules</h2><p class="explain">Use this page while working through either calculat[...]
+
+const validMoods={
+ 'AAA-1':'Barbara','EAE-1':'Celarent','AII-1':'Darii','EIO-1':'Ferio',
+ 'EAE-2':'Cesare','AEE-2':'Camestres','EIO-2':'Festino','AOO-2':'Baroco',
+ 'AAI-3':'Darapti','IAI-3':'Disamis','AII-3':'Datisi','EAO-3':'Felapton','OAO-3':'Bocardo','EIO-3':'Ferison',
+ 'AAI-4':'Bramantip','AEE-4':'Camenes','IAI-4':'Dimaris','EAO-4':'Fesapo','EIO-4':'Fresison'
+};
+const sophisms=[
+ {m:'AAA',f:2,rule:'Undistributed middle',s:'cats',p:'animals',mid:'dogs'},
+ {m:'AEE',f:1,rule:'Illicit major',s:'poets',p:'scientists',mid:'scholars'},
+ {m:'AAE',f:1,rule:'Illicit minor',s:'citizens',p:'voters',mid:'adults'},
+ {m:'EAE',f:1,rule:'Two negative premises',s:'angels',p:'mortals',mid:'animals'},
+ {m:'IIA',f:3,rule:'Two particular premises',s:'artists',p:'teachers',mid:'musicians'},
+ {m:'EAA',f:1,rule:'Affirmative conclusion from a negative premise',s:'humans',p:'perfect beings',mid:'creatures'},
+ {m:'AIA',f:1,rule:'Universal conclusion from a particular premise',s:'philosophers',p:'thinkers',mid:'humans'},
+ {m:'AAI',f:1,rule:'Existential fallacy',s:'unicorns',p:'animals',mid:'horned beings'}
+];
+let sophismIndex=0, constructedIndex=0, worldCurrent='india', worldMessage=null;
+const worldRegions=[
+{id:'india',name:'India',marker:'IN',x:65,y:48,philosophy:'Spiritual Monism',summary:'Ultimate reality is one impersonal spiritual absolute. Multiplicity, individuality, and change are finally reduced[...]
+{id:'greece',name:'Greece',marker:'GR',x:51.5,y:36,philosophy:'Dualism',summary:'Reality is explained by two co-ultimate principles, commonly spirit and matter or form and matter, so that the world is[...]
+{id:'france',name:'France',marker:'FR',x:47.2,y:31,philosophy:'Material Monism',summary:'Only matter in motion is ultimately real. Mind, reason, moral obligation, and purpose are reduced to physical p[...]
+{id:'england',name:'England',marker:'EN',x:46.2,y:27,philosophy:'Deism',summary:'A creator may exist, but he does not providentially govern the world, reveal himself specially, or intervene in history[...]
+];
+function worldConqueredCount(){return worldRegions.filter(r=>state.world&&state.world[r.id]).length}
+function worldPct(){return Math.round(worldConqueredCount()/worldRegions.length*100)}
+function renderWorldConquest(sel){if(sel)worldCurrent=sel;const r=worldRegions.find(x=>x.id===worldCurrent)||worldRegions[0],conquered=worldConqueredCount(),msg=worldMessage&&worldMessage.id===r.id?wo[...]
+function answerWorld(id,i){const r=worldRegions.find(x=>x.id===id);if(!r)return;if(i===r.correct){state.world[id]=true;save();worldMessage={id,type:'good',html:`<strong>Region conquered.</strong><p>${[...]
+function clearWorldConquest(){state.world={};worldMessage=null;save();renderWorldConquest(worldCurrent)}
+function H(t,x,role){const cls=role==='S'?'termS':role==='P'?'termP':'termM';return `<span class="${cls}">${esc(x)}</span>`}
+function markedProp(t,a,b,ra,rb){const d=Q[t].d;let A=H(t,a,ra),B=H(t,b,rb);if(d[0])A=`<span class="dist">${A}</span>`;if(d[1])B=`<span class="dist">${B}</span>`;return Q[t].f(A,B)}
+function renderChallenges(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Advanced Practice</div><h2>Challenges</h2><p class="explain">Diagnose fallacies, explore opposition, conquer[...]
+${[['⚔','Defeat the Sophism','Find the exact broken rule and repair an invalid argument.','renderSophism()','Traditional fallacies'],['🗺','World Conquest','Move across the map and refute the reig[...]
+function backChallenges(){renderChallenges()}
+function argHTML(x){const r=rel(x.f,x.s,x.p,x.mid),m=x.m;return `<div class="statement"><b>Major:</b> ${markedProp(m[0],r[0][0],r[0][1],r[0][0]===x.s?'S':r[0][0]===x.p?'P':'M',r[0][1]===x.s?'S':r[0][1[...]
+function renderSophism(){const x=sophisms[sophismIndex%sophisms.length], choices=[x.rule,...sophisms.map(y=>y.rule).filter(y=>y!==x.rule).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-[...]
+function answerSophism(a){const x=sophisms[sophismIndex%sophisms.length],ok=a===x.rule;sophfb.className=`result show ${ok?'good':'bad'}`;sophfb.innerHTML=ok?`<strong>Sophism defeated.</strong><p>${rul[...]
+function nextSophism(){sophismIndex=(sophismIndex+1)%sophisms.length;renderSophism()}
+const squareData={A:{text:'All S are P',contra:'O',relations:{E:'Contrary',I:'Subaltern',O:'Contradictory'}},E:{text:'No S are P',contra:'I',relations:{A:'Contrary',I:'Contradictory',O:'Subaltern'}},I[...]
+function renderSquare(active='A'){const d=squareData[active];game.innerHTML=`<div class="section-title"><div class="eyebrow">Interactive Diagram</div><h2>Square of Opposition</h2><p class="explain">Se[...]
+function relationText(a,b,r){if(r==='Contradictory')return 'Exactly one is true and exactly one is false.';if(r==='Contrary')return 'They cannot both be true, though both may be false.';if(r==='Subcon[...]
+const constructed=[
+ {type:'conclusion',major:'All humans are mortal.',minor:'All philosophers are humans.',answer:'All philosophers are mortal.'},
+ {type:'middle',major:'No reptiles are warm-blooded.',minor:'All snakes are reptiles.',answer:'reptiles'},
+ {type:'missing',major:'All virtuous acts are praiseworthy.',conclusion:'All acts of courage are praiseworthy.',answer:'All acts of courage are virtuous acts.'},
+ {type:'form',major:'No machines are persons.',minor:'Some computers are machines.',answer:'O'}
+];
+function renderConstruct(){const x=constructed[constructedIndex%constructed.length];let prompt=x.type==='conclusion'?'Type the conclusion that follows.':x.type==='middle'?'Type the middle term.':x.typ[...]
+function norm(x){return x.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
+function checkConstruct(){const x=constructed[constructedIndex%constructed.length],a=constructAnswer.value,ok=x.type==='form'?a===x.answer:norm(a)===norm(x.answer);constructFb.className=`result show $[...]
+function nextConstruct(){constructedIndex=(constructedIndex+1)%constructed.length;renderConstruct()}
+function renderMoods(){const mastered=JSON.parse(localStorage.getItem('weyk-moods')||'[]');game.innerHTML=`<div class="section-title"><div class="eyebrow">Classical Collection</div><h2>Named Valid Moo[...]
+function renderMap(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Cumulative Natural Theology</div><h2>Argument Map</h2><p class="explain">Each established conclusion becomes part o[...]
+function randomOf(a){return a[Math.floor(Math.random()*a.length)]}
+function renderGenerator(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Reusable Classroom Tool</div><h2>Custom Challenge Generator</h2><p class="explain">Enter any three terms and [...]
+function makeGenerated(){const S=gS.value||'S',P=gP.value||'P',M=gM.value||'M',type=gType.value;if(type==='immediate'){const t=randomOf(['A','E','I','O']),op=randomOf(['conversion','obversion','contra[...]
+// Enhanced syllogism lab with visual S/P/M marking and mood recognition.
+function renderSyl(){game.innerHTML=`<div class="section-title"><div class="eyebrow">Classical Logic Workshop</div><h2>Syllogism Lab</h2><p class="explain"><span class="termS">S is the minor term</spa[...]
+function roleOf(x){return x===S.value?'S':x===P.value?'P':'M'}
+function previewSyl(){const r=rel(fig.value,S.value,P.value,M.value),key=`${ma.value}${mi.value}${co.value}-${fig.value}`;preview.innerHTML=`<div class="statement"><b>Major:</b> ${markedProp(ma.value,[...]
+function calcSyl(){previewSyl();const key=`${ma.value}${mi.value}${co.value}-${fig.value}`,r=test(ma.value,mi.value,co.value,fig.value,{S:eS.checked,P:eP.checked,M:eM.checked}),fails=ruleDiagnosis(ma.[...]
+
+renderHome();
+</script></body></html>
